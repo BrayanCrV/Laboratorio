@@ -17,6 +17,8 @@
         <mockito.version>5.11.0</mockito.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <lombok.version>1.18.32</lombok.version>
+        <h2.version>2.2.224</h2.version>
+        <liquibase.version>4.27.0</liquibase.version>
         <jacoco.version>0.8.12</jacoco.version>
     </properties>
 
@@ -32,6 +34,18 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
 
         <dependency>
