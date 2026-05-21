@@ -97,6 +97,11 @@ public class PowerPlant implements ParkZone {
         ));
     }
 
+    public void repair() {
+        operational = true;
+        currentEnergy = initialEnergy;
+    }
+
     public void performMaintenance(ParkLedger ledger) {
         ledger.appendExpense(new ExpenseRecord(
             nextExpenseId++,

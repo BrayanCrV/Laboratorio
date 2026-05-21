@@ -55,6 +55,7 @@ Ya estan implementados:
 
 - Configuracion con YAML
 - Modelos principales de turistas, dinosaurios, trabajadores, tickets y encuestas
+- Vehiculos de mantenimiento para el flujo intermedio
 - Zonas principales del parque
 - Registro abstracto de ingresos, gastos y eventos mediante `ParkLedger`
 - Eventos base con patron Strategy
@@ -63,7 +64,6 @@ Pendiente para completar el nivel intermedio:
 
 - H2 + Liquibase
 - `DatabaseService`
-- Vehiculos
 - Eventos intermedios de ofertas y fallas de vehiculo
 - Motor completo de simulacion
 - Monitor del parque
