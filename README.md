@@ -1,4 +1,4 @@
-# Parque Turistico de Dinosaurios
+# Laboratorio - Parque Turistico de Dinosaurios
 
 Simulacion en Java 17 de un parque turistico de dinosaurios para el laboratorio de Bloque 4.
 
