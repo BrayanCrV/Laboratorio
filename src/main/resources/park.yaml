@@ -1,0 +1,72 @@
+simulation:
+  totalSteps: 100
+  arrivalBatchSize: 5
+
+tourists: 50
+
+dinosaurs:
+  carnivores: 5
+  herbivores: 15
+
+workers:
+  guards: 3
+  technicians: 2
+  dailySalary: 150.0
+
+arrival:
+  maxCapacity: 30
+  ticketPrice: 25.0
+
+hub:
+  maxCapacity: 100
+  souvenirPrice: 15.0
+  souvenirPurchaseProbability: 0.4
+
+bathroom:
+  maxCapacity: 10
+  useDurationSteps: 3
+  spaPrice: 20.0
+  spaPurchaseProbability: 0.2
+
+powerplant:
+  initialEnergy: 100.0
+  consumptionPerStep: 1.5
+  failureProbability: 0.05
+  maintenanceCost: 200.0
+  repairCost: 500.0
+
+enclosure:
+  basic:
+    maxVisitors: 20
+    entryFee: 10.0
+  premium:
+    maxVisitors: 12
+    entryFee: 30.0
+  vip:
+    maxVisitors: 5
+    entryFee: 75.0
+
+vehicles:
+  count: 4
+  repairSteps: 5
+
+event:
+  escape:
+    probability: 0.05
+  blackout:
+    probability: 0.03
+  storm:
+    probability: 0.04
+  deals:
+    probability: 0.08
+  vehicleFailure:
+    probability: 0.06
+
+monitoring:
+  intervalSteps: 10
+
+db:
+  path: ./data/parkdb
+
+output:
+  directory: output
