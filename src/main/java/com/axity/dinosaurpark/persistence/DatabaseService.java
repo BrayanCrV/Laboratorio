@@ -23,6 +23,7 @@ public class DatabaseService implements ParkLedger, AutoCloseable {
         try {
             this.connection = DriverManager.getConnection("jdbc:h2:" + dbPath, "sa", "");
             runLiquibase();
+            connection.setAutoCommit(true);
         } catch (Exception e) {
             throw new IllegalStateException("No se pudo inicializar la base de datos", e);
         }
