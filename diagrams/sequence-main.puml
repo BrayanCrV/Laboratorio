@@ -1,0 +1,97 @@
+@startuml sequence-main
+skinparam maxMessageSize 150
+skinparam participantPadding 10
+
+actor Main
+participant "SimulationEngine" as Engine
+participant "ParkState" as State
+participant "ArrivalZone" as Arrival
+participant "CentralHub" as Hub
+participant "BathroomZone" as Bath
+participant "ObservationEnclosure" as Enc
+participant "PowerPlant" as PP
+participant "Eventos\n(Strategy)" as Events
+participant "Guards / Technicians" as Workers
+participant "ParkMonitor" as Monitor
+participant "DatabaseService" as DB
+
+Main -> Engine : new SimulationEngine(config)
+Main -> Engine : run()
+
+== Inicializacion ==
+
+Engine -> DB : new DatabaseService(dbPath)
+DB -> DB : Liquibase crea tablas
+
+Engine -> State : buildInitialState(db)
+note right of State
+  Crear: turistas, dinosaurios,
+  workers, vehiculos, zonas
+end note
+
+Engine -> Arrival : enter(tourist) x N
+
+== Loop Principal (step 0..99) ==
+
+loop Cada step
+
+  Engine -> State : clearActiveEvents()
+  Engine -> State : setCurrentStep(step)
+
+  -- A. Llegadas --
+
+  Engine -> Arrival : processBatch(batchSize, discount, state)
+  Arrival -> State : addRevenue(tickets)
+
+  -- B. Movimiento --
+
+  loop Por cada turista IN_PARK
+    Engine -> Hub : visit(tourist, rng, discount, state)
+    Hub -> State : addRevenue(souvenirs)
+    Engine -> Bath : tryEnter(tourist, rng, state)
+    Bath -> State : addRevenue(spa)
+    Engine -> Enc : visit(tourist, rng, state)
+    Enc -> State : addRevenue(entryFee)
+  end
+
+  -- C. Ticks --
+
+  Engine -> Bath : tick()
+  Engine -> PP : tick(rng, state)
+  PP -> State : addExpense(maintenance)
+  Engine -> State : vehicle.tick() x 4
+
+  -- D. Eventos Probabilisticos --
+
+  loop Por cada SimulationEvent
+    Engine -> Events : rng.nextDouble() < probability?
+    alt Evento se activa
+      Events -> State : execute(state, rng)
+      Events -> State : addExpense() / addActiveEvent()
+      Events -> DB : appendEvent(record)
+    else No se activa
+      Events -->> Engine : saltar
+    end
+  end
+
+  -- E. Workers --
+
+  Workers -> State : recaptureEscapedDinosaurs()
+  Workers -> State : repairIfNeeded(plant, vehicles)
+  Workers -> State : addExpense(salarios)
+
+  -- F. Monitoreo --
+
+  alt step % interval == 0
+    Engine -> Monitor : displaySnapshot(state, step, interval)
+  end
+
+end
+
+== Cierre ==
+
+Engine -> State : Turistas → EXITED
+Engine --> Main : Resumen final (ingresos, gastos, balance)
+Engine -> DB : close()
+
+@enduml

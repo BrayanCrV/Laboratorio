@@ -1,0 +1,36 @@
+@startuml sequence-blackout-event
+skinparam maxMessageSize 150
+
+participant "SimulationEngine" as Engine
+participant "BlackoutEvent" as Event
+participant "ParkState" as State
+participant "PowerPlant" as PP
+participant "Technician" as Tech
+participant "Vehicle" as Veh
+participant "DatabaseService" as DB
+
+== Disparo del evento ==
+
+Engine -> Event : execute(state, rng)
+Event -> PP : triggerFailure(state)
+PP -> PP : operational = false
+PP -> PP : currentEnergy = 0
+PP -> State : addExpense(2000)
+Event -> DB : appendEvent(toRecord(step))
+Event -> State : registerActiveEvent("APAGON_MASIVO")
+
+== Reparacion (fase E del mismo step) ==
+
+Tech -> State : repairIfNeeded(powerPlant, vehicles)
+Tech -> Veh : buscar vehiculo AVAILABLE
+
+alt Hay vehiculo disponible
+  Veh -> Veh : use() → IN_USE
+  Tech -> PP : repair()
+  note right of PP : operational = true\nenergy = initialEnergy
+  Veh -> Veh : free() → AVAILABLE
+else Sin vehiculo disponible
+  note right of PP : Queda sin reparar\neste step
+end
+
+@enduml

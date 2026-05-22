@@ -1,0 +1,39 @@
+@startuml sequence-escape-event
+skinparam maxMessageSize 150
+
+participant "SimulationEngine" as Engine
+participant "DinosaurEscapeEvent" as Event
+participant "ParkState" as State
+participant "Dinosaur" as Dino
+participant "Tourist" as Tourist
+participant "Guard" as Guard
+participant "DatabaseService" as DB
+
+== Disparo del evento ==
+
+Engine -> Event : execute(state, rng)
+Event -> State : getRandomDinosaurInEnclosure(rng)
+State --> Event : dinosaur
+
+Event -> Dino : escape()
+note right of Dino : IN_ENCLOSURE → ESCAPED
+
+alt rng.nextDouble() < dangerLevel
+  Event -> State : getRandomTouristInPark(rng)
+  State --> Event : tourist
+  Event -> Tourist : setStatus(ATTACKED)
+  note right of Tourist : IN_PARK → ATTACKED
+end
+
+Event -> DB : appendEvent(toRecord(step))
+Event -> State : addExpense(feedingCost)
+Event -> State : registerActiveEvent("ESCAPE_DINOSAURIO")
+
+== Recaptura (fase E del mismo step) ==
+
+Guard -> State : getDinosaurs()
+Guard -> Dino : recaptureEscapedDinosaurs(dinosaurs)
+Guard -> Dino : returnToEnclosure()
+note right of Dino : ESCAPED → IN_ENCLOSURE
+
+@enduml

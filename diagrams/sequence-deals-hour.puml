@@ -1,0 +1,32 @@
+@startuml sequence-deals-hour
+skinparam maxMessageSize 150
+
+participant "SimulationEngine" as Engine
+participant "DealsHourEvent" as Event
+participant "ParkState" as State
+participant "ArrivalZone" as Arrival
+participant "CentralHub" as Hub
+participant "DatabaseService" as DB
+
+== Disparo del evento ==
+
+Engine -> Event : execute(state, rng)
+Event -> State : activateDealsHour(0.30)
+note right of State : dealsHourActive = true\ncurrentDiscount = 0.30
+Event -> DB : appendEvent(toRecord(step))
+Event -> State : registerActiveEvent("HORA_DE_OFERTAS")
+
+== Efecto en el step actual ==
+
+Engine -> Arrival : processBatch(batchSize, 0.30, state)
+note right of Arrival : Boletos con 30% descuento
+
+Engine -> Hub : visit(tourist, rng, 0.30, state)
+note right of Hub : Souvenirs con 30% descuento
+
+== Fin del step ==
+
+Engine -> State : clearActiveEvents()
+note right of State : dealsHourActive = false\ncurrentDiscount = 0.0
+
+@enduml
