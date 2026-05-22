@@ -1,7 +1,5 @@
 package com.axity.dinosaurpark.monitoring;
 
-import com.axity.dinosaurpark.model.dinosaur.DinosaurStatus;
-import com.axity.dinosaurpark.model.tourist.TouristStatus;
 import com.axity.dinosaurpark.simulation.ParkState;
 
 /**
@@ -14,13 +12,8 @@ public class ParkMonitor {
             return;
         }
 
-        long activeTourists = state.getTourists().stream()
-            .filter(t -> t.getStatus() == TouristStatus.IN_PARK)
-            .count();
-
-        long dinosaursInEnclosure = state.getDinosaurs().stream()
-            .filter(d -> d.getStatus() == DinosaurStatus.IN_ENCLOSURE)
-            .count();
+        int activeTourists = state.countActiveTourists();
+        int dinosaursInEnclosure = state.countDinosaursInEnclosure();
 
         double energyPercentage = (state.getPowerPlant().getCurrentEnergy()
             / state.getPowerPlant().getInitialEnergy()) * 100.0;
@@ -35,6 +28,8 @@ public class ParkMonitor {
         System.out.printf ("  3. Energia disponible:        %.1f%%\n", energyPercentage);
         System.out.println("  4. Eventos activos:           " + state.getActiveEventNames());
         System.out.println("  5. Vehiculos no disponibles:  " + vehiclesUnavailable);
+        System.out.printf ("  6. Ingresos acumulados:       $%.2f\n", state.getTotalRevenue());
+        System.out.printf ("  7. Gastos acumulados:         $%.2f\n", state.getTotalExpenses());
         System.out.println("==================================================");
     }
 }
